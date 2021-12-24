@@ -14,10 +14,10 @@ openssl req -x509 -newkey rsa:4096 -keyout key.pem -out cert.pem -sha256 -days 3
 -subj "/C=US/ST=Oregon/L=Portland/O=Company Name/OU=Org/CN=."
 # create volume to mount in container with config files
 mkdir mnt
-wget $REPO"blob/main/mnt/pgadmin4.db?raw=true" -o mnt/pgadmin4.db
+wget $REPO"blob/main/mnt/pgadmin4.db?raw=true" -O mnt/pgadmin4.db
 sudo chown -R 5050:5050 mnt/
 # create pre-populated list of servers
-wget $REPO"blob/main/servers.json?raw=true" -o servers.json
+wget $REPO"blob/main/servers.json?raw=true" -O servers.json
 sudo chown -R 5050:5050 servers.json
 # run pgadmin container
 docker pull dpage/pgadmin4
