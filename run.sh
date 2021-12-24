@@ -1,8 +1,9 @@
 #!/usr/bin/env bash
+REPO="https://github.com/cp2423/pgadmin4/"
 sudo yum update -y
-sudo amazon-linux-extras install docker -y
+sudo amazon-linux-extras install -y docker
 sudo service docker start
-sudo usermod -a -G docker ec2-user
+#sudo usermod -a -G docker ec2-user
 sudo chkconfig docker on
 # folder to keep everything in
 mkdir pgadmin4
@@ -13,9 +14,14 @@ openssl req -x509 -newkey rsa:4096 -keyout key.pem -out cert.pem -sha256 -days 3
 -subj "/C=US/ST=Oregon/L=Portland/O=Company Name/OU=Org/CN=."
 # create volume to mount in container with config files
 mkdir mnt
-# create pgadmin container
+wget $REPO"blob/main/mnt/pgadmin4.db?raw=true" -o mnt/pgadmin4.db
+sudo chown -R 5050:5050 mnt/
+# create pre-populated list of servers
+wget $REPO"blob/main/servers.json?raw=true" -o servers.json
+sudo chown -R 5050:5050 servers.json
+# run pgadmin container
 docker pull dpage/pgadmin4
-docker run -p 443:443 \
+sudo docker run -p 443:443 \
 -v ~/pgadmin4/mnt:/var/lib/pgadmin \
 -v ~/pgadmin4/cert.pem:/certs/server.cert \
 -v ~/pgadmin4/key.pem:/certs/server.key \
@@ -25,3 +31,9 @@ docker run -p 443:443 \
 -e "PGADMIN_ENABLE_TLS=True" \
 --name "pgadmin4" \
 -d --restart always dpage/pgadmin4
+# run postgres container
+docker pull postgres
+sudo docker run --name postgres -e POSTGRES_PASSWORD=multiverse -d postgres
+# done!
+ip = `curl https://api.ipify.org`
+echo "Go to $ip to log in to pgadmin with username = postgres@db.com and password = multiverse"
