@@ -35,5 +35,5 @@ sudo docker run -p 443:443 \
 docker pull postgres
 sudo docker run --name postgres -e POSTGRES_PASSWORD=multiverse -d postgres
 # done!
-ip = `curl https://api.ipify.org`
-echo "Go to $ip to log in to pgadmin with username = postgres@db.com and password = multiverse"
+ip=`curl https://api.ipify.org`
+echo "Go to https://$ip/ to log in to pgadmin with username = postgres@db.com and password = multiverse"
